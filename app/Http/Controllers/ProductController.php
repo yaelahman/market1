@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Product;
 use App\Category;
+use App\ImageProduct;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
@@ -18,8 +20,8 @@ class ProductController extends Controller
     public function index()
     {
         $product = Product::where('id_users', Auth::user()->id)
-                ->orderBy('id', 'desc')
-                ->get();
+            ->orderBy('id', 'desc')
+            ->get();
 
         $data = [
             'product' => $product
@@ -52,6 +54,7 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
+
         DB::beginTransaction();
         try {
             $product = new Product();
@@ -65,6 +68,22 @@ class ProductController extends Controller
             $product->on_click = 0;
 
             if ($product->save()) {
+                foreach ($request->file('image') as $index => $row) {
+                    $format = $row->getClientOriginalName();
+                    $name = Str::random(30);
+                    $newName = $name . '.' . $format;
+                    $row->storeAs(
+                        'products',
+                        $newName
+                    );
+
+                    $image = new ImageProduct();
+                    $image->id_product = $product->id;
+                    $image->image = $newName;
+                    $image->is_main = $index == 0 ? 1 : 0;
+                    $image->save();
+                }
+
                 $request->session()->flash('alert', 'success');
                 $request->session()->flash('message', 'Product created successfully');
 
@@ -72,6 +91,7 @@ class ProductController extends Controller
                 return redirect()->to(route('product.index'));
             }
         } catch (\Exception $e) {
+            DB::rollBack();
             throw $e;
             return redirect()->to(route('product.index'));
         }
@@ -97,9 +117,11 @@ class ProductController extends Controller
     public function edit($id)
     {
         $product = Product::find($id);
+        $category = Category::all();
 
         $data = [
-            'product' => $product
+            'product' => $product,
+            'category' => $category
         ];
 
         return view('product.edit', $data);
