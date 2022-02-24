@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateLogRequestLicenseTable extends Migration
+class CreateCategoryTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,10 @@ class CreateLogRequestLicenseTable extends Migration
      */
     public function up()
     {
-        Schema::create('log_request_license', function (Blueprint $table) {
+        Schema::create('category', function (Blueprint $table) {
             $table->id();
-            $table->integer('id_license');
+            $table->string('name');
+            $table->integer('status');
             $table->timestamps();
         });
     }
@@ -27,6 +28,6 @@ class CreateLogRequestLicenseTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('log_request_license');
+        Schema::dropIfExists('category');
     }
 }

@@ -11,7 +11,7 @@
     <meta name="description"
         content="Monster Lite is powerful and clean admin dashboard template, inpired from Bootstrap Framework">
     <meta name="robots" content="noindex,nofollow">
-    <title>License App</title>
+    <title>Market App</title>
     <link rel="canonical" href="https://www.wrappixel.com/templates/monster-admin-lite/" />
     <!-- Favicon icon -->
     <link rel="icon" type="image/png" sizes="16x16" href="/template/assets/images/favicon.png">
@@ -41,7 +41,7 @@
                             @csrf
     
                             <div class="form-group">
-                                <label for="example-email" class="col-md-12">Email</label>
+                                <label for="example-email" class="col-md-12">Name</label>
                                 <div class="col-md-12">
                                     <input id="name" type="text" class="form-control ps-0 form-control-line @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" required autocomplete="name" autofocus>
 

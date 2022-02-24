@@ -28,23 +28,8 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $license = License::all();
-        foreach ($license as $row) {
-            $update = License::find($row->id);
-            if (strtotime(date('Y-m-d', strtotime($row->duration))) < strtotime(date('Y-m-d'))) {
-                $update->status = 0;
-                $update->save();
-            }
-        }
-        $license = License::count();
-        $dailyRequest = LogRequestLicense::where('created_at', 'ILIKE', '%' . date('Y-m-d') . '%')->count();
 
-        $data = [
-            'license_count' => $license,
-            'request_count' => $dailyRequest
-        ];
-
-        return view('home', $data);
+        return view('home');
     }
 
     public function profile()

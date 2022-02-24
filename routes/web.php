@@ -17,6 +17,6 @@ Auth::routes();
 
 Route::get('/', 'HomeController@index')->name('home');
 
-Route::resource('/license', 'LicenseController');
+Route::resource('/category', 'CategoryController');
 Route::get('/profile', 'HomeController@profile')->name('profile.index');
 Route::post('/profile/{profile}', 'HomeController@updateProfile')->name('profile.update');
