@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Product;
+use App\Category;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
@@ -15,7 +17,9 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $product = Product::orderBy('id', 'desc')->get();
+        $product = Product::where('id_users', Auth::user()->id)
+                ->orderBy('id', 'desc')
+                ->get();
 
         $data = [
             'product' => $product
@@ -31,7 +35,13 @@ class ProductController extends Controller
      */
     public function create()
     {
-        return view('product.create');
+        $category = Category::all();
+
+        $data = [
+            'category' => $category
+        ];
+
+        return view('product.create', $data);
     }
 
     /**
@@ -45,8 +55,14 @@ class ProductController extends Controller
         DB::beginTransaction();
         try {
             $product = new Product();
+            $product->id_users = Auth::user()->id;
+            $product->id_category = $request->id_category;
             $product->name = $request->name;
+            $product->description = $request->description;
+            $product->whatsapp = $request->whatsapp;
+            $product->stock = $request->stock;
             $product->status = 1;
+            $product->on_click = 0;
 
             if ($product->save()) {
                 $request->session()->flash('alert', 'success');
@@ -101,8 +117,11 @@ class ProductController extends Controller
         DB::beginTransaction();
         try {
             $product = Product::find($id);
+            $product->id_category = $request->id_category;
             $product->name = $request->name;
-            $product->status = 1;
+            $product->description = $request->description;
+            $product->whatsapp = $request->whatsapp;
+            $product->stock = $request->stock;
 
             if ($product->save()) {
                 $request->session()->flash('alert', 'success');
